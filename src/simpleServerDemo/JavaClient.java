@@ -1,4 +1,4 @@
-package simpleServerDemo;
+package simpleMultiServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,15 +38,35 @@ public class JavaClient
 		Socket socket = new Socket("127.0.0.1", 12654);
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		out = new PrintWriter(socket.getOutputStream(), true);
+		
+		boolean running = true;
+		
+		// request made from client to start connection
+		out.println("CLIENTREQUEST");
+		body.append("************************************************************* \n");
+		body.append("* The client is requesting a connection from the server. * \n");
+		body.append("************************************************************* \n");
 
-		while (true)
+		while (running)
 		{
 			String line = in.readLine();
+			// the client is able to speak with the sever 2 step handshake complete  time to execute 
 			if (line.contains("NEEDNAME"))
 			{
+				body.append("**************************************************************************************************** \n");
+				body.append("* The server has ackowleged the clients request and is requesting a name from the client. * \n");
+				body.append("**************************************************************************************************** \n");
 				String name = getName();
-				body.setText("User " + name + " has connected to: " + socket.toString() + "\n" +
+				if (name != null)
+				{
+				body.append("User " + name + " has connected to: " + socket.toString() + "\n" +
 				name + ", Have a nice day!");
+				}
+				else 
+				{
+					body.append("No name was entered please close the window.");
+					running = false;
+				}
 			}
 		}
 	}

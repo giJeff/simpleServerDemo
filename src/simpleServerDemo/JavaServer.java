@@ -1,4 +1,4 @@
-package simpleServerDemo;
+package simpleMultiServer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -48,17 +48,24 @@ public class JavaServer
 				in = new BufferedReader(new InputStreamReader(connection_Socket.getInputStream()));
 				out = new PrintWriter(connection_Socket.getOutputStream(), true);
 
-				while (!is_Name_Entered)
+				String line = in.readLine();
+				// server gets request from client to initiate a connection 
+				if (line.contains("CLIENTREQUEST"))
 				{
-					out.println("NEEDNAME");
-					user_Entered_Name = in.readLine();
-					if (user_Entered_Name == null)
+
+					while (!is_Name_Entered)
 					{
-						is_Name_Entered = false;
-					}
-					else
-					{
-						is_Name_Entered = true;
+						// server acks the client request and sends out a second handshake to ensure this is a good connection
+						out.println("NEEDNAME");
+						user_Entered_Name = in.readLine();
+						if (user_Entered_Name == null)
+						{
+							is_Name_Entered = false;
+						}
+						else
+						{
+							is_Name_Entered = true;
+						}
 					}
 				}
 			}
